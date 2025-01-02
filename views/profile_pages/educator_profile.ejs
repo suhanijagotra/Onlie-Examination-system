@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educator Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../../../css_files/edu_prof.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" class="logo"><img src="https://img.icons8.com/?size=100&id=X7Ps4LtblU6u&format=png&color=000000" alt="Logo"></a></li>
+            <li class="hideOnMobile"><a href="/Login/Educator/<%= educatorDetails.educatorName %>">Home</a></li>
+            <li class="hideOnMobile"><a href='/Educator/<%=user._id%>'>Profile</a></li>
+            <li class="hideOnMobile"><a href="/Login">Log Out</a></li>
+            <li class="menu-button" onclick="showSidebar()">
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" fill="#e5e7eb"><path d="M120 816v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></a>
+            </li>
+        </ul>
+        <ul class="sidebar">
+            <li onclick="hideSidebar()">
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" fill="#e5e7eb"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg></a>
+            </li>
+            <li class="hideOnMobile"><a href="/Login/Educator/<%= educatorDetails.educatorName %>">Home</a></li>
+            <li class="hideOnMobile"><a href='/Educator/<%=user._id%>'>Profile</a></li>
+            <li class="hideOnMobile"><a href="/Login">Log Out</a></li>
+        </ul>
+    </nav>
+
+    <main class="profile-container">
+        <section class="details-and-graph">
+            <div class="educator-details card">
+                <div class="profile-header">
+                    <img src="https://img.icons8.com/?size=100&id=492ILERveW8G&format=png&color=000000" alt="Profile">
+                    <h1>Welcome, <%= educatorDetails.educatorName %></h1>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="stats-card">
+                        <h3>Email</h3>
+                        <img src="https://img.icons8.com/?size=100&id=499&format=png&color=000000" alt="Email">
+                        <div class="stats-value"><%= educatorDetails.email %></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Expertise</h3>
+                        <img src="https://img.icons8.com/?size=100&id=40569&format=png&color=000000" alt="Expertise">
+                        <div class="stats-value"><%= educatorDetails.subjectExpertise %></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Experience</h3>
+                        <img src="https://img.icons8.com/?size=100&id=zQHDjquZr1hA&format=png&color=000000" alt="Experience">
+                        <div class="stats-value"><%= educatorDetails.experience %> years</div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Exams Created</h3>
+                        <img src="https://img.icons8.com/?size=100&id=WgRfdARqFY2G&format=png&color=000000" alt="Exams">
+                        <div class="stats-value"><%= total_exams %></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="graph-section">
+                    <div class="child_1">
+                    <h2>Educator Highlights</h2>
+                    <ul class="highlight-list">
+                        <li>Total Exams Created This Year: <strong><%= this_year_count %></strong></li>
+                        <li>Total Questions Created: <strong><%= t_ques %></strong></li>
+                        <li>Students Engaged: <strong><%= stu_engaged %></strong></li>
+                    </ul>
+                </div>
+                <div class="child_2">
+                    <h2>Exams Created by Month</h2>  
+                    <canvas id="examsCreatedChart" width="400" height="200"></canvas>
+                </div>
+            </div>     
+        </section>
+
+        <section class="exams-list">
+            <h2>Created Exams</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exam ID</th>
+                        <th>Title</th>
+                        <th>Course</th>
+                        <th>Time Limit</th>
+                        <th>Max Attempts</th>
+                        <th>Total Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% exams.forEach(exam => { %>
+                        <tr>
+                            <td><%= exam.Exam_id %></td>
+                            <td><%= exam.title %></td>
+                            <td><%= exam.course %></td>
+                            <td><%= exam.timeLimit %> mins</td>
+                            <td><%= exam.maxAttempts %></td>
+                            <td><%= exam.totalScore %></td>
+                            
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    
+    <script>
+        const path = window.location.pathname;
+        const parts = path.split("/").filter(Boolean);
+        function showSidebar() {
+            document.querySelector('.sidebar').classList.add('show');
+        }
+
+        function hideSidebar() {
+            document.querySelector('.sidebar').classList.remove('show');
+        }
+
+        fetch(`/Educator/${parts[1]}/graph_data`)
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('examsCreatedChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.data.map(item => item.period),
+                datasets: [{
+                    label: 'Exams Created',
+                    data: data.data.map(item => item.count),
+                    backgroundColor: 'rgba(96, 165, 250, 0.3)', // Lighter background
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#3b82f6', // Makes data points more visible
+                    pointBorderColor: '#1e293b',
+                    pointBorderWidth: 1,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#f1f5f9',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: 10
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f1f5f9',
+                        bodyColor: '#e5e7eb',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        padding: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#808080'
+                        },
+                        ticks: {
+                            color: '#f1f5f9', // Lighter tick color
+                            padding: 8,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#808080'
+                        },
+                        ticks: {
+                            color: '#f1f5f9',
+                            padding: 8,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 0,
+                        bottom: 10
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching graph data:', error);
+    });
+</script>
+</body>
+</html>

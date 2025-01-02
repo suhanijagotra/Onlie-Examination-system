@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2e;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      background-color: #2d2f3f;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc00;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      color: #ffffff;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #444;
+      background-color: #3b3d51;
+      color: #ffffff;
+      border-radius: 4px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      width: 48%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #searchExamBtn {
+      background-color: #28a745;
+      color: white;
+    }
+    #searchExamBtn:hover {
+      background-color: #218838;
+    }
+    #startTimerBtn {
+      background-color: #007bff;
+      color: white;
+      cursor: not-allowed;
+    }
+    #startTimerBtn.enabled {
+      cursor: pointer;
+      background-color: #007bff;
+    }
+    #startTimerBtn.enabled:hover {
+      background-color: #0056b3;
+    }
+    .instructions {
+      background-color: #373b53;
+      padding: 15px;
+      border-left: 5px solid #ffcc00;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Exam Search</h1>
+
+    <div class="instructions">
+      <h3>Instructions:</h3>
+      <p>Please enter the exam ID to search for your exam. Once you find your exam, the "Start Exam Timer" button will be enabled.</p>
+      <ul>
+        <li>Ensure that the exam ID is correct before proceeding.</li>
+        <li>Once you click on the start button, the exam begins immediately.</li>
+      </ul>
+    </div>
+
+    <form id="examForm" method="POST">
+      <label for="examId">Enter Exam ID:</label>
+      <input type="text" id="examId" placeholder="Enter exam ID..." name="examId">
+
+      <div class="button-container">
+        <!-- Search Button -->
+        <button id="searchExamBtn" type="button">Search Exam</button>
+        
+        <!-- Start Timer Button (Initially Disabled) -->
+        <button id="startTimerBtn" type="submit" disabled>Start Exam</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Handle the form submission for the search
+    document.getElementById('searchExamBtn').addEventListener('click', function(event) {
+      searchExam();
+    });
+
+    async function searchExam() {
+      let examId = document.getElementById("examId").value;
+      let startTimerBtn = document.getElementById("startTimerBtn");
+
+      if (examId === "") {
+        alert("Please enter an exam ID.");
+        return;
+      }
+
+      try {
+        // Send a GET request to search for the exam
+        const response = await fetch(`/Exam/search/<%= user._id %>/${examId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok){
+          const data = await response.json();
+          alert(`${data.message}, you can start the exam`);
+
+          // Enable the Start Exam button
+          startTimerBtn.disabled = false;
+          startTimerBtn.classList.add("enabled");
+
+          // Add click event listener for the start exam button
+          startTimerBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const form = document.getElementById("examForm");
+
+            form.action = `/Exam/start/<%=user._id%>/${examId}`;
+            
+            // Submit the form to start the exam
+            form.submit();
+          });
+
+        } else {
+          const errorData = await response.json();
+          startTimerBtn.disabled = true;
+          startTimerBtn.classList.remove("enabled");
+          alert(errorData.message || "Exam not found.");
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert("An error occurred while searching for the exam.");
+      }
+    }
+  </script>
+
+</body>
+</html>

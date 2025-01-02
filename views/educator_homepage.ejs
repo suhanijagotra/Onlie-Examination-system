@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        /* Global and body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1f22;
+            color: #64707c;
+        }
+
+        /* Navbar styling */
+        nav {
+            background-color: #2c3e50;
+            position: fixed;
+            height: 50px;
+            width: 100%;
+            align-items: center;
+            top: 0;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            padding: 0 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: aquamarine;
+        }
+
+        .logo {
+            margin-right: auto;
+            padding-left: 15px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: rgba(44, 62, 80, 0.85);
+            backdrop-filter: blur(12px);
+            box-shadow: -10px 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1001;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        .sidebar li {
+            padding-bottom: 15px;
+            width: 100%;
+        }
+
+        .sidebar a {
+            width: 100%;
+            color: #ecf0f1;
+            /* Light Gray */
+            padding: 15px;
+            text-align: left;
+            display: block;
+        }
+
+        .menu-button {
+            display: none;
+            cursor: pointer;
+        }
+
+        /* Responsive rules */
+        @media(max-width: 500px) {
+            .hideOnMobile {
+                display: none;
+            }
+
+            .menu-button {
+                display: block;
+            }
+        }
+
+        /* Main content styling */
+        .home {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #1a273496;
+            /* Slightly transparent background */
+            color: #ffffff;
+            /* Dark Brown color for text */
+        }
+
+        .home_text {
+            border-radius: 20px;
+            background-color: #181e25;
+            max-width: 50%;
+            padding: 20px;
+        }
+
+        .home_text h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .home_text h1 span {
+            color: #1abc9c;
+        }
+
+        .test {
+            background-color: #1abc9c;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .test:hover {
+            background-color: #0eedb9;
+        }
+
+        .image {
+            width: 100%;
+        }
+
+        .image img {
+
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+         <a href="#" class="logo"><img src="https://img.icons8.com/?size=100&id=X7Ps4LtblU6u&format=png&color=000000" alt="Email"></a>
+        <ul class="sidebar">
+            <li class="cross" onclick="toggleSidebar()"><a href="#" aria-label="Close Sidebar"><svg
+                        xmlns="http://www.w3.org/2000/svg" height="26" width="26">
+                        <path
+                            d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z" />
+                    </svg></a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/educator/<%= user._id %>">Profile</a></li>
+            <li><a href="/educator/create_exam">Create Exam</a></li>
+            <li><a href="/Login">Log Out</a></li>
+        </ul>
+        <ul>
+            <li class="hideOnMobile"><a href="">Home</a></li>
+            <li class="hideOnMobile"><a href="/Educator/<%= user._id %>">Profile</a></li>
+            <li class="hideOnMobile"><a href="/Educator/check_details/<%= user.username %>">Create Exam</a></li>
+            <li class="hideOnMobile"><a href="/Login">Log Out</a></li>
+            <li class="menu-button" onclick="showSidebar()">
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26">
+                  <path d="M120 816v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+    </nav>
+
+    <section class="home">
+        <div class="home_text">
+            <h1>Welcome, <span id="username">
+                    <%= user.username %>
+                </span></h1>
+            <p>Believe in your hard work, embrace the opportunity, and give it your best shot. Your efforts today will pave the way for a better tomorrow. You’ve got this!</p>
+            <form action="/Educator/check_details/<%= user.username %>">
+                <button class="test" type="submit">Create Test</button>
+            </form>
+        </div>
+        <div class="image">
+            <img src="../../animation.svg" alt="Description of the image">
+        </div>
+    </section>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
+    </script>
+
+</body>
+
+</html>

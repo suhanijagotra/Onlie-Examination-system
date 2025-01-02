@@ -1,0 +1,85 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f6f9fb;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Image Section */
+.image-section {
+    flex: 1;
+    background-color: #eaf4f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image-section img {
+    max-width: 80%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Info Section */
+.info-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-section h2 {
+    font-size: 2em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.info-section p {
+    font-size: 1.2em;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+}
+
+/* Button Group */
+.button-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-button {
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.student-button {
+    background-color: #2c3e50;
+}
+
+.student-button:hover {
+    background-color: #1abc9c;
+}
+
+.teacher-button {
+    background-color: #3498db;
+}
+
+.teacher-button:hover {
+    background-color: #2980b9;
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            width: 800px;
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .image-container {
+            width: 50%;
+            background-color: #E0F7FA;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-container {
+            width: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #00796B;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00796B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #004D40;
+        }
+
+        .forgot-password {
+            text-align: right;
+            color: #00796B;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .signup {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup a {
+            color: #00796B;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="image-container">
+            <img src="online exam banner image2.png" alt="Student Illustration">
+        </div>
+        <div class="form-container"> 
+            <form  class ="myform"  method="post">
+                <h1>Login</h1>
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div>
+                    <label for="role">Role:</label>
+                    <select id="role" name="role" required defaut="None">
+                        <option value="Student">Student</option>
+                        <option value="Educator">Educator</option>
+                    </select>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) =>{
+            var selectElement = document.getElementById('role');
+            var Username = document.getElementById('username');
+            var form = document.querySelector('.myform');
+            function updateFormAction() {
+                var selectedValue = selectElement.value;
+                form.action = `/Login/${selectedValue}/${Username.value}`;
+                console.log('Form action set to:', form.action);
+            }
+            updateFormAction();
+            selectElement.addEventListener('change', function() {
+                updateFormAction();
+            });
+            Username.addEventListener('change', function() {
+                updateFormAction();
+            });
+        });
+    </script>
+   
+</body>
+</html>

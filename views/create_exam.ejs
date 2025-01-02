@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Exam</title>
+    <link rel="stylesheet" href="../../css_files/style_create_exam.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+            --red: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+  
+
+        /* Container Styles */
+        .container {
+          
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            margin-top: 80px;
+            padding: 2rem;
+            background-color: var(--white);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-remove {
+            background-color: var(--red);
+        }
+
+        /* Question Card Styles */
+        .question-card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .option-group {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .hideOnMobile {
+                display: none;
+            }
+
+            .container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            .menu-button {
+                display: block;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-card {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+  <nav>
+    <ul class="sidebar">
+      <li class="cross" onclick="hideSidebar()"><a class="cross" href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg></a></li>
+      <li><a href="#">Home</a></li>
+      <li><a href=`${user._id}`>Profile</a></li>
+      <li><a href="#">Log Out</a></li>
+    </ul>
+    <ul>
+        <li><a href="#" class="logo"><img src="https://img.icons8.com/?size=100&id=X7Ps4LtblU6u&format=png&color=000000" alt="Email"></a></li>
+      <li class="hideOnMobile"><a href="/Login/Educator/<%= user %>">Home</a></li>
+      <li class="hideOnMobile"><a href='/Educator/<%=id%>'>Profile</a></li>
+      <li class="hideOnMobile"><a href="/Login">Log Out</a></li>
+      <li class="menu-button" onclick="showSidebar()"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="M120 816v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></a></li>
+    </ul>
+  </nav>
+
+    <div class="container">
+        <form id="examCreationForm">
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">Create New Exam</h2>
+            
+            <div class="form-group">
+                <label for="examId">Exam ID (4 digits):</label>
+                <input type="text" id="examId" name="Exam_id" pattern="\d{4}" required placeholder="Enter 4-digit Exam ID">
+            </div>
+
+            <div class="form-group">
+                <label for="title">Exam Title:</label>
+                <input type="text" id="title" name="title" required placeholder="Enter Exam Title">
+            </div>
+
+            <div class="form-group">
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" required placeholder="Enter Course Name">
+            </div>
+
+            <div class="form-group">
+                <label for="createdBy">Created By:</label>
+                <input type="text" id="createdBy" name="createdBy" required placeholder="Your Name">
+            </div>
+
+            <div class="form-group">
+                <label for="timeLimit">Time Limit (minutes):</label>
+                <input type="number" id="timeLimit" name="timeLimit" min="10" max="240" value="30" required>
+            </div>
+
+            <div class="form-group">
+                <label for="maxAttempts">Max Attempts:</label>
+                <input type="number" id="maxAttempts" name="maxAttempts" min="1" max="5" value="1" required>
+            </div>
+
+            <div id="questionsContainer">
+                <h3 style="margin-bottom: 1rem;">Questions</h3>
+                <button type="button" id="addQuestionBtn" class="btn">+ Add Question</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary">Create Exam</button>
+            </div>
+        </form>
+    </div>
+
+    <template id="questionTemplate">
+        <div class="question-card">
+            <div class="form-group">
+                <label>Question Text:</label>
+                <textarea name="questionText" rows="3" required placeholder="Enter question text"></textarea>
+            </div>
+            <div class="options-container">
+                <div class="form-group option-group">
+                    <label>Option 1:</label>
+                    <input type="text" name="option1" required placeholder="Enter first option">
+                </div>
+                <div class="form-group option-group">
+                    <label>Option 2:</label>
+                    <input type="text" name="option2" required placeholder="Enter second option">
+                </div>
+                <div class="form-group option-group">
+                    <label>Option 3:</label>
+                    <input type="text" name="option3" required placeholder="Enter third option">
+                </div>
+                <div class="form-group option-group">
+                    <label>Option 4:</label>
+                    <input type="text" name="option4" required placeholder="Enter fourth option">
+                </div>
+                <div class="form-group">
+                    <label>Correct Answer:</label>
+                    <select name="correctAnswer" required>
+                        <option value="">Select Correct Option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                        <option value="4">Option 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Marks:</label>
+                    <input type="number" name="marks" min="1" max="10" required placeholder="Enter marks for this question">
+                </div>
+                <button type="button" class="btn btn-remove">Remove Question</button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('examCreationForm');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const addQuestionBtn = document.getElementById('addQuestionBtn');
+    const questionTemplate = document.getElementById('questionTemplate');
+    
+    let questionCount = 0;
+    const MAX_QUESTIONS = 10;
+
+    // Utility Functions
+    function createUniqueId() {
+        return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    }
+
+    function validateExamId(examId) {
+        const examIdRegex = /^\d{4}$/;
+        return examIdRegex.test(examId);
+    }
+
+    function validateQuestionData(questionData) {
+        const requiredFields = [
+            'questionText', 
+            'option1', 
+            'option2', 
+            'option3', 
+            'option4', 
+            'marks'
+        ];
+
+        return requiredFields.every(field => 
+           questionData[field] != ''
+        );
+    }
+
+    // Add Question Functionality
+    addQuestionBtn.addEventListener('click', function() {
+        if (questionCount >= MAX_QUESTIONS) {
+            alert(`Maximum ${MAX_QUESTIONS} questions allowed`);
+            return;
+        }
+
+        // Clone the question template
+        const questionClone = questionTemplate.content.cloneNode(true);
+        const questionCard = questionClone.querySelector('.question-card');
+        
+        // Update inputs to have unique names and IDs
+        questionCard.querySelectorAll('input, textarea, select').forEach((input, index) => {
+            const baseInputName = input.getAttribute('name');
+            input.setAttribute('name', `questions[${questionCount}][${baseInputName}]`);
+            input.setAttribute('id', `question-${questionCount}-${baseInputName}`);
+        });
+
+        // Remove Question Button Functionality
+        const removeBtn = questionCard.querySelector('.btn-remove');
+        removeBtn.addEventListener('click', function() {
+            questionCard.remove();
+            questionCount--;
+        });
+
+        // Append the new question card
+        questionsContainer.appendChild(questionCard);
+        questionCount++;
+    });
+
+    // Form Submission Handler
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Validate Exam ID
+        const examIdInput = document.getElementById('examId');
+        if (!validateExamId(examIdInput.value)) {
+            alert('Exam ID must be a 4-digit number');
+            return;
+        }
+
+        // Collect Form Data
+        const formData = new FormData(form);
+        const examData = {
+            Exam_id: formData.get('Exam_id'),
+            title: formData.get('title'),
+            course: formData.get('course'),
+            createdBy: formData.get('createdBy'),
+            timeLimit: parseInt(formData.get('timeLimit')) || 30,
+            maxAttempts: parseInt(formData.get('maxAttempts')) || 1,
+            questions: [],
+            totalScore: 0
+        };
+
+        // Process Questions
+        let invalidQuestionFound = false;
+        for (let i = 0; i < questionCount; i++) {
+            const questionData = {
+                questionText: formData.get(`questions[${i}][questionText]`),
+                options: [
+                    formData.get(`questions[${i}][option1]`),
+                    formData.get(`questions[${i}][option2]`),
+                    formData.get(`questions[${i}][option3]`),
+                    formData.get(`questions[${i}][option4]`)
+                ],
+                correctAnswer: formData.get(`questions[${i}][option${formData.get(`questions[${i}][correctAnswer]`)}]`),
+                marks: parseInt(formData.get(`questions[${i}][marks]`)) || 0
+            };
+
+            // Validate each question
+            if (!validateQuestionData(questionData)) {
+                alert(`Please complete all fields for Question ${i + 1}`);
+                invalidQuestionFound = true;
+                break;
+            }
+
+            examData.totalScore += questionData.marks;
+            examData.questions.push(questionData);
+        }
+
+        // Check for invalid questions
+        if (invalidQuestionFound) return;
+
+        // Validate minimum questions
+        if (examData.questions.length === 0) {
+            alert('Please add at least one question to the exam');
+            return;
+        }
+
+        // POST Request to the server
+        try {
+            const response = await fetch('../../Educator/Exam_Create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(examData)
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              window.location.href = `/Educator/${data.educatorId}`;
+            } 
+            else {
+              throw new Error('Failed to create exam');
+            }
+            alert('Exam created successfully!');
+            form.reset();
+            questionsContainer.innerHTML = `
+                <h3>Questions</h3>
+                <button type="button" id="addQuestionBtn" class="btn">+ Add Question</button>
+            `;
+            questionCount = 0;
+
+        } catch (error) {
+            console.error('Error creating exam:', error);
+            alert('Error creating exam. Please try again.');
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

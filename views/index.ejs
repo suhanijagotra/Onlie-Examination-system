@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Examination Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #f0f2f5;
+            color: #444;
+        }
+        .container {
+            position: relative; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff69;
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            max-width: 600px;
+            z-index: 1; 
+        }
+        .container h1 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .container p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .button {
+            background-color: #08a87d;
+            color: #fff;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: #067b5f;
+            transform: translateY(-3px);
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            filter: brightness(80%);
+        }
+
+    .bottom{
+     position: relative;
+     bottom: 90%;
+}
+    </style>
+</head>
+<body>
+    <img src="inde_bg.jpg" alt="Background Image" class="background-image">
+    <div class="container">
+        <h1>Welcome to Our Online Examination Portal</h1>
+        <p>Your one-stop solution for managing and taking exams online. Whether you're an educator or a student, we have the tools you need to succeed.</p>
+        <div class="buttons">
+            <a href="/Signup/educator" class="button">I'm an Educator</a>
+            <a href="/Signup/student" class="button">I'm a Student</a>
+        </div>
+        
+    </div>
+    
+    
+</body>
+
+</html>

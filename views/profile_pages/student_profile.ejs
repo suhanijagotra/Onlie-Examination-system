@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+         body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #1e1f22e9; /* Light gray background */
+        color: #64707c; /* Dark navy for text */
+    }  
+    nav {
+        background-color: #2c3e50; /* Dark Blue */
+        position: fixed;
+        height:50px;
+        width: 100%;
+        top: 0; /* Make sure navbar stays at the top */
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+        z-index: 1000; /* Ensure the nav is on top */
+        display: flex;
+        align-items: center;
+    }
+    
+    nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+    }
+    
+    nav li {
+        height: 20px;
+    }
+    
+    nav a {
+        height: 100%;
+        padding: 0 30px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        color: #ecf0f1; /* Light Gray */
+        transition: color 0.3s ease;
+    }
+    
+    nav a:hover {
+        color: aquamarine; /* Hover effect color */
+    }
+    
+    nav li:first-child {
+        margin-right: auto;
+    }
+    
+    .logo {
+        margin-right: auto;
+        padding-left: 15px;
+    }
+
+    .logo img {
+        height: 40px;
+        width: auto;
+    }
+    
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 250px;
+        background-color: rgba(44, 62, 80, 0.85); /* Semi-transparent Dark Blue */
+        backdrop-filter: blur(12px);
+        box-shadow: -10px 0 10px rgba(0, 0, 0, 0.2);
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out; /* Smooth transition */
+    }
+    
+    .sidebar.show {
+        transform: translateX(0); /* Slide in */
+    }
+    
+    .sidebar li {
+        padding-bottom:15px;
+        width: 100%;
+    }
+    
+    .cross {
+      margin-bottom:20px;
+    }
+    
+    .sidebar a {
+        width: 100%;
+        color: #ecf0f1; /* Light Gray */
+        padding: 15px;
+        text-align: left;
+        display: block;
+    }
+    
+    .menu-button {
+        display: none;
+    }
+    
+    @media(max-width: 500px) {
+        .hideOnMobile {
+            display: none;
+        }
+    
+        .home {
+            display: block;
+        }
+    
+        .menu-button {
+            display: block;
+        }
+    }
+    
+    @media(max-width: 400px) {
+        .sidebar {
+            width: 100%;
+        }
+    }
+
+
+       /* Main Content Layout */
+main.profile-container {
+    margin-top: 50px;
+    padding: 5px;
+}
+
+/* Details and Graph Grid Layout */
+
+.details-and-graph {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+/* Student Details Card */
+.student-details.card {
+    background-color: #1f2937;
+    border-radius: 1rem;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-header img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #374151;
+    padding: 0.5rem;
+}
+
+.profile-header h1 {
+    font-size: 1.5rem;
+    color: #e5e7eb;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stats-card {
+    background-color: #374151;
+    border-radius: 0.75rem;
+    padding: 5px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+}
+
+.stats-card h3 {
+    color: #9ca3af;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.stats-card img {
+    width: 40px;
+    height: 40px;
+    margin: 0.5rem auto;
+    filter: invert(1);
+}
+
+.stats-card .stats-value {
+    color: #e5e7eb;
+    font-size: 1rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+/* Graph Section */
+.graph-section {
+    background-color: #1f2937;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.graph-section h2 {
+    color: #e5e7eb;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+.box{
+    display: flex;
+}
+.box table,.box th,.box td{
+    width: 30%;
+    padding: 5px;
+    margin: 5px;
+    max-height: 250px;
+
+}
+
+.graph-section canvas {
+    margin-left:20px ;
+    margin-right: 20px;
+    width: 70% !important;
+    height: 300px !important;
+    max-height: 300px;
+}
+
+/* Exam Attempts Section */
+.exam-attempts {
+    background-color: #1f2937;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.exam-attempts h2 {
+    color: #e5e7eb;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #374151;
+}
+
+th {
+    background-color: #374151;
+    color: #9ca3af;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+th:last-child {
+    border-top-right-radius: 0.5rem;
+}
+
+td {
+    color: #e5e7eb;
+}
+
+tr:hover td {
+    background-color: #374151;
+}
+
+/* Additional Media Queries */
+@media (max-width: 1024px) {
+    .details-and-graph {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .graph-section {
+        min-height: 350px;
+    }
+}
+
+@media (max-width: 640px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .stats-card {
+        padding: 1rem;
+    }
+    
+    .profile-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .graph-section {
+        min-height: 300px;
+    }
+}
+/* Additional Media Queries */
+@media (max-width: 1024px) {
+    .details-and-graph {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .stats-card {
+        padding: 1rem;
+    }
+    
+    .profile-header h1 {
+        font-size: 1.25rem;
+    }
+}
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #05070e; /* Darker slate blue background */
+    color: #94a3b8; /* Softer text color */
+}
+
+nav {
+    background-color: #1e293b; /* Darker navy */
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    top: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+nav a {
+    color: #e2e8f0;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #38bdf8; /* Bright blue hover effect */
+}
+
+.sidebar {
+    background-color: rgba(30, 41, 59, 0.95); /* Slightly more opaque sidebar */
+    backdrop-filter: blur(12px);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar a {
+    color: #e2e8f0;
+}
+
+/* Main Content Layout */
+.student-details.card {
+    background-color: #1e293b; /* Darker navy */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header h1 {
+    color: #f1f5f9; /* Brighter white for headers */
+}
+
+/* Dashboard Grid */
+.stats-card {
+    background-color: #334155; /* Lighter navy for cards */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    background-color: #02164b;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   /* Slightly lighter on hover */
+}
+
+.stats-card h3 {
+    color: #cbd5e1; /* Lighter gray for card headers */
+}
+
+.stats-card .stats-value {
+    color: #f1f5f9; /* Brighter white for values */
+}
+
+/* Graph Section */
+.graph-section {
+    background-color: #1e293b; /* Darker navy */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.graph-section h2 {
+    color: #f1f5f9; /* Brighter white for headers */
+}
+
+/* Exam Attempts Section */
+.exam-attempts {
+    background-color: #1e293b; /* Darker navy */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.exam-attempts h2 {
+    color: #f1f5f9; /* Brighter white for headers */
+}
+
+/* Table Styles */
+th {
+    background-color: #334155; /* Lighter navy for table headers */
+    color: #cbd5e1; /* Lighter gray for header text */
+}
+
+td {
+    color: #f1f5f9; /* Brighter white for table content */
+    border-bottom: 1px solid #334155; /* Lighter border */
+}
+
+tr:hover td {
+    background-color: #475569; /* Slightly lighter on hover */
+}
+
+/* Profile image background */
+.profile-header img {
+    background-color: #334155; /* Lighter navy for profile image background */
+}
+
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" class="logo"><img src="https://img.icons8.com/?size=100&id=X7Ps4LtblU6u&format=png&color=000000" alt="Email"></a></li>
+            <li class="hideOnMobile"><a href="/Login/Student/<%= studentDetails.studentName %>">Home</a></li>
+            <li class="hideOnMobile"><a href=''>Profile</a></li>
+            <li class="hideOnMobile"><a href="/Login">Log Out</a></li>
+            <li class="menu-button" onclick="showSidebar()">
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" fill="#e5e7eb"><path d="M120 816v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></a>
+            </li>
+        </ul>
+        <ul class="sidebar">
+            <li onclick="hideSidebar()">
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" fill="#e5e7eb"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg></a>
+            </li>
+            <li><a href="/">Home</a></li>
+            <li><a href='/Student/<%= examAttempts.student %>'>Profile</a></li>
+            <li><a href="/Login">Log Out</a>></li>
+        </ul>
+    </nav>
+
+    <main class="profile-container">
+        <section class="details-and-graph">
+            <div class="student-details card">
+                <div class="profile-header">
+                    <img src="https://img.icons8.com/?size=100&id=492ILERveW8G&format=png&color=000000" alt="Profile">
+                    <h1>Welcome, <%= studentDetails.studentName %></h1>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="stats-card">
+                        <h3>Email</h3>
+                        <img src="https://img.icons8.com/?size=100&id=499&format=png&color=000000" alt="Email">
+                        <div class="stats-value"><%= studentDetails.email %></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Education Level</h3>
+                        <img src="https://img.icons8.com/?size=100&id=40569&format=png&color=000000" alt="Education">
+                        <div class="stats-value"><%= studentDetails.currentLevelOfEducation %></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Institute</h3>
+                        <img src="https://img.icons8.com/?size=100&id=zQHDjquZr1hA&format=png&color=000000" alt="Institute">
+                        <div class="stats-value"><%= studentDetails.instituteName %></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Exmas Attempted</h3>
+                        <img src="https://img.icons8.com/?size=100&id=WgRfdARqFY2G&format=png&color=000000" alt="Institute">
+                        <div class="stats-value"><%= size %></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="graph-section">
+                <h2>Exam Attempts by Month</h2>
+                <div class="box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Trimester</th>
+                                <th>Months</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>T1</td>
+                                <td>Jan - Mar</td>
+                            </tr>
+                            <tr>
+                                <td>T2</td>
+                                <td>Apr - Jun</td>
+                            </tr>
+                            <tr>
+                                <td>T3</td>
+                                <td>Jul - Sep</td>
+                            </tr>
+                            <tr>
+                                <td>T4</td>
+                                <td>Oct - Dec</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <canvas id="examAttemptsByMonthChart"></canvas>
+                </div>
+                
+            </div>
+        </section>
+
+        <section class="exam-attempts">
+            <h2>Recent Exam Attempts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exam ID</th>
+                        <th>Score</th>
+                        <th>Date Attempted</th>
+                        <th>Status</th>
+                        <th>Attempts</th>
+                        <th>Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% examAttempts.forEach(attempt => { %>
+                        <tr>
+                            <td><%= attempt.exam_id %></td>
+                            <td><%= attempt.score %></td>
+                            <td><%= new Date(attempt.dateAttempted).toLocaleDateString() %></td>
+                            <td><%= attempt.status %></td>
+                            <td><%= attempt.attempt_no %></td>
+                            <td>
+                                <a href="/Exam/Result/<%= user_id %>/<%= attempt.exam_id %>" class="logo">
+                                    <img src="../report.png" alt="result">
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+                
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Sidebar Toggle Functions
+        const path = window.location.pathname;
+        const parts = path.split("/").filter(Boolean);
+
+        function showSidebar() {
+            document.querySelector('.sidebar').classList.add('show');
+        }
+
+        function hideSidebar() {
+            document.querySelector('.sidebar').classList.remove('show');
+        }
+
+        // Chart Configuration
+        fetch(`/Student/${parts[1]}/graph_data`)
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('examAttemptsByMonthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.data.map(item => item.period),
+                datasets: [{
+                    label: 'Exam Attempts',
+                    data: data.data.map(item => item.count),
+                    backgroundColor: '#60a5fa',
+                    borderColor: '#3b82f6',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#e5e7eb',
+                            padding: 10
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#374151'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            padding: 5
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#374151'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            padding: 5
+                        },
+                        // Adjust bar width
+                        barPercentage: 0.2, // Adjust to your preferred bar width
+                        categoryPercentage: 0.3 // Adjust to control spacing between bars
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 5,
+                        right: 5,
+                        top: -10,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching graph data:', error);
+    });
+
+    </script>
+</body>
+</html>

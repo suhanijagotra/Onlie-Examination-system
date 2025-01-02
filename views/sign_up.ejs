@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            display: flex;
+            width: 800px;
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .image-container {
+            width: 50%;
+            background-color: #E0F7FA;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-container {
+            width: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #00796B;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00796B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #004D40;
+        }
+
+        .already-registered {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .already-registered a {
+            color: #00796B;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .already-registered a:hover {
+            text-decoration: underline;
+        }
+
+        .existing-account {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-button {
+            width: auto;
+            padding: 10px;
+            background-color: #00796B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            background-color: #004D40;
+        }
+
+
+        .alert {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        .alert-error {
+            background-color: #ffb4b4;
+            color: #016357;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="image-container">
+            <img src="../animation.svg" alt="Description of the image">
+        </div>
+        <div class="form-container">
+            <h2>Create Your Account</h2>
+            <div id="passwordMismatchAlert" class="alert alert-error">Passwords do not match!</div>
+            <div id="userExistsAlert" class="alert alert-error">Username already exists!</div>
+            <div id="serverErrorAlert" class="alert alert-error">An error occurred during signup!</div>
+            
+            <form id="signupForm" action="/Signup" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="input-field" placeholder="Username" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="input-field" placeholder="Password" required>
+                
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
+                
+                <label for="role">Role:</label>
+                <select id="role" name="role" class="input-field" required>
+                    <option value="Student">Student</option>
+                    <option value="Educator">Educator</option>
+                </select>
+
+                <button type="submit" class="sign-up-button">Sign Up</button>
+            </form>
+            <div class="existing-account">
+                Already have an account? 
+                <a href="/Login">
+                    <button type="button" class="login-button">Log In</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Reset alerts
+            document.getElementById('passwordMismatchAlert').style.display = 'none';
+            document.getElementById('userExistsAlert').style.display = 'none';
+            document.getElementById('serverErrorAlert').style.display = 'none';
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            // Client-side password validation
+            if (password !== confirmPassword) {
+                document.getElementById('passwordMismatchAlert').style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/Signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: password,
+                        confirm_password: confirmPassword,
+                        role: document.getElementById('role').value
+                    })
+                });
+                
+                if (response.status === 400) {
+                    const errorMessage = await response.text();
+                    if (errorMessage === "User already exists") {
+                        document.getElementById('userExistsAlert').style.display = 'block';
+                    } else {
+                        document.getElementById('serverErrorAlert').style.display = 'block';
+                    }
+                } else if (response.status === 200) {
+                    // Redirect or show success message
+                    window.location.href = '/Login';
+                }
+            } catch (error) {
+                document.getElementById('serverErrorAlert').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

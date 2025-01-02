@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1f22;
+            color: #ffffff;
+            padding: 15px;
+        }
+        .message {
+            background-color: #ffcccc;
+            padding: 15px;
+            border: 1px solid #2b39b8;
+            color: #d8000c;
+            box-shadow: #370e0e;
+            font-size: 1.2rem;
+            text-align: center;
+            border-top-right-radius: 15px;
+            border-bottom-left-radius:15px ;
+            border-bottom-right-radius:15px ; 
+        }
+
+        .message a {
+            text-decoration: none;
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        .message a:hover {
+            text-decoration: underline;
+        }
+
+
+    </style>
+</head>
+<body>
+
+        <div class="message">
+            <h2>Notice: Dashboard Access</h2>
+            <p>To access your educator dashboard, you need to create at least one exam.</p>
+            <p>Please <a href="/Educator/check_details/<%= user_n %>">click here</a> to create your first exam.</p>
+        </div>
+   
+</body>
+</html>

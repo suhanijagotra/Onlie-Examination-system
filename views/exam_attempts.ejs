@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Attempts Overview</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .attempts-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #10121a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1abc9c;
+        }
+
+        .attempts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .attempts-table th,
+        .attempts-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #3b4e63;
+        }
+
+        .attempts-table th {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+
+        .attempts-table tr:nth-child(even) {
+            background-color: #2c3e50;
+        }
+
+        .attempts-table tr:hover {
+            background-color: #34495e;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color: #3498db;
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="attempts-container">
+        <header>
+            <h1>Exam Attempts for <%= examName %></h1>
+        </header>
+
+        <main>
+            <% if (attempts && attempts.length > 0) { %>
+                <table class="attempts-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Score</th>
+                            <th>Attempt Date</th>
+                            <th>Attempt Number</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% attempts.forEach(attempt => { %>
+                            <tr>
+                                <td><%= attempt.studentName %></td>
+                                <td><%= attempt.score %></td>
+                                <td><%= new Date(attempt.dateAttempted).toLocaleDateString() %></td>
+                                <td><%= attempt.attempt_no %></td>
+                                <td><%= attempt.status %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No attempts recorded for this exam.</p>
+            <% } %>
+        </main>
+
+        <footer>
+            <button onclick="window.location.href='/educator/dashboard'" class="back-button">Back to Dashboard</button>
+        </footer>
+    </div>
+</body>
+</html>
